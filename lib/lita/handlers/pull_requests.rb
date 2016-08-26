@@ -1,3 +1,6 @@
+require "lita/handlers/pull_request_helper"
+require "lita/handlers/pull_request_formatter"
+
 module Lita
   module Handlers
     class PullRequests < Handler
@@ -9,8 +12,9 @@ module Lita
       def show(response)
         username = response.matches.pop.first
         if username =~ /^[a-z0-9_]+$/
-          prh = PullRequestHelper.new(response.matches.pop.first)
-          response.reply("hola")
+          prh = PullRequestHelper.new(username)
+          prf = PullRequestFormatter.new(prh.retrieve)
+          response.reply(prf.text)
         else
           response.reply(t("commands.show.error"))
         end

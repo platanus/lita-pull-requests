@@ -9,7 +9,7 @@ describe Lita::Handlers::PullRequests, lita_handler: true do
     context "with a valid username" do
       it "should display a list of pull requests" do
         send_command("pr show #{username}", as: user)
-        expect(replies).to eq([])
+        expect(replies.size).to eq(1)
       end
     end
 
