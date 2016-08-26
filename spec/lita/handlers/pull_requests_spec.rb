@@ -15,8 +15,8 @@ describe Lita::Handlers::PullRequests, lita_handler: true do
 
     context "without an invalid username" do
       it "should display an error message" do
-        send_command("pr show", as: user)
-        expect(replies).to eq(described_class::translate("commands.show.error"))
+        send_command("pr show @#{username}", as: user)
+        expect(replies.first).to eq(described_class::translate("commands.show.error"))
       end
     end
   end
