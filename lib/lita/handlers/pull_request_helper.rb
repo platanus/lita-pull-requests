@@ -8,17 +8,29 @@ class PullRequestHelper
   end
 
   def retrieve
-    repos.flat_map do |repo|
-      client.pull_requests("platanus/#{repo[:name]}").select do |pr|
-        pr[:assignee] && pr[:assignee][:login] == username
-      end
+    issues.select do |issue|
+      resolve_assignee(issue, username)
     end
   end
 
-  def repos
-    [*1..5].map do |i|
-      client.organization_repositories("platanus", page: i, per_page: 100)
+  def issues
+    [*1..10].flat_map do |i|
+      client.org_issues("platanus", filter: "all", page: i, per_page: 100).reject do |issue|
+        issue[:pull_request].nil?
+      end
     end.flatten
+  end
+
+  def resolve_assignee(issue, username)
+    if issue[:assignee]
+      return true if issue[:assignee][:login] == username
+    end
+    if issue[:assignees]
+      issue[:assignees].each do |assignee|
+        return true if assignee[:login] == username
+      end
+    end
+    false
   end
 
   private
