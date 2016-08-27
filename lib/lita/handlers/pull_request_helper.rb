@@ -26,14 +26,8 @@ class PullRequestHelper
   end
 
   def resolve_assignee(issue, username)
-    if issue[:assignee]
-      return true if issue[:assignee][:login] == username
-    end
-    if issue[:assignees]
-      issue[:assignees].each do |assignee|
-        return true if assignee[:login] == username
-      end
-    end
+    return true if issue[:assignee] && issue[:assignee][:login] == username
+    return true if issue[:assignees] && issue[:assignees].any? { |a| a[:login] == username }
     false
   end
 
