@@ -14,11 +14,15 @@ class PullRequestHelper
   end
 
   def issues
-    [*1..10].flat_map do |i|
-      client.org_issues("platanus", filter: "all", page: i, per_page: 100).reject do |issue|
-        issue[:pull_request].nil?
+    results = []
+    [*1..100].each do |i|
+      response = client.org_issues("platanus", filter: "all", page: i, per_page: 100)
+      response.each do |issue|
+        results.push(issue) unless issue[:pull_request].nil?
       end
-    end.flatten
+      break if response.size < 100
+    end
+    results
   end
 
   def resolve_assignee(issue, username)
