@@ -4,8 +4,6 @@ require "lita/handlers/pull_request_formatter"
 module Lita
   module Handlers
     class PullRequests < Handler
-      # insert handler code here
-
       route /^pr show (.+)$/, :show, help: {
         t("help.clear.usage") => t("help.clear.description")
       }

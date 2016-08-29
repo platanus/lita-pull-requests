@@ -1,7 +1,3 @@
-# title, html_url, id, created_at
-#
-# assignee => login
-
 class PullRequestFormatter
   attr_accessor :pull_requests
 
