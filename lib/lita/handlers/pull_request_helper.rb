@@ -3,8 +3,9 @@ require "octokit"
 class PullRequestHelper
   attr_accessor :username
 
-  def initialize(username)
+  def initialize(username, access_token)
     self.username = username
+    self.access_token = access_token
   end
 
   def retrieve
@@ -33,6 +34,6 @@ class PullRequestHelper
   private
 
   def client
-    @client ||= Octokit::Client.new(access_token: "")
+    @client ||= Octokit::Client.new(access_token: access_token)
   end
 end

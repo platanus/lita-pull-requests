@@ -4,6 +4,8 @@ require "lita/handlers/pull_request_formatter"
 module Lita
   module Handlers
     class PullRequests < Handler
+      config :access_token
+
       route /^pr show ([a-z0-9_]+)$/, :show, help: {
         t("help.clear.usage") => t("help.clear.description")
       }
