@@ -1,19 +1,20 @@
+require "lita/handlers/pull_request_helper"
+require "lita/handlers/pull_request_formatter"
+
 module Lita
   module Handlers
     class PullRequests < Handler
-      # insert handler code here
+      config :access_token
 
-      route /^pr show (.+)$/, :show, help: {
+      route /^pr show ([a-z0-9_]+)$/, :show, help: {
         t("help.clear.usage") => t("help.clear.description")
       }
+
       def show(response)
         username = response.matches.pop.first
-        if username =~ /^[a-z0-9_]+$/
-          prh = PullRequestHelper.new(response.matches.pop.first)
-          response.reply("hola")
-        else
-          response.reply(t("commands.show.error"))
-        end
+        prh = PullRequestHelper.new(username, config.access_token)
+        prf = PullRequestFormatter.new(prh.retrieve)
+        response.reply(prf.text)
       end
 
       Lita.register_handler(self)
