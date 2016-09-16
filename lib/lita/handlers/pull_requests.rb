@@ -29,7 +29,7 @@ module Lita
       end
 
       def load_on_start(payload)
-        scheduler.cron '*/1 * * * *' do
+        scheduler.cron '0 11 * * *' do
           log.info "Checking for old pull resquests..."
           prh = PullRequestHelper.new(config.access_token)
           prf = PullRequestFormatter.new(
@@ -38,7 +38,7 @@ module Lita
 
           robot.send_messages(
             Source.new(room: Lita::Room.find_by_name(config.room)),
-            prf.text
+            prf.pretty_print
           )
         end
       end
