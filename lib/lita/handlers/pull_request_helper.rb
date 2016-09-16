@@ -1,14 +1,19 @@
 require "octokit"
 
 class PullRequestHelper
-  attr_accessor :username
+  attr_accessor :access_token
 
-  def initialize(username, access_token)
-    self.username = username
+  def initialize(access_token)
     self.access_token = access_token
   end
 
-  def retrieve
+  def retrieve_older_than(date)
+    pull_requests.select do |pull|
+      Date.parse(pull[:updated_at].to_s) < date
+    end
+  end
+
+  def retrieve_for_user(username)
     pull_requests.select do |pull|
       assigned_to_user?(pull, username)
     end
