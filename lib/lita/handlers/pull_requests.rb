@@ -13,7 +13,7 @@ module Lita
         t("help.clear.usage") => t("help.clear.description")
       }
 
-      route /^pr showall$/, :get_older_than, help: {
+      route /^pr check_pending$/, :check_pending, help: {
         t("help.clear.usage") => t("help.clear.description")
       }
 
@@ -30,12 +30,21 @@ module Lita
 
       def load_on_start(payload)
         scheduler.cron '0 11 * * *' do
-          log.info "Checking for old pull resquests..."
-          prh = PullRequestHelper.new(config.access_token)
-          prf = PullRequestFormatter.new(
-            prh.retrieve_older_than(Date.today - 3)
-          )
+          log.info "Cron triggered."
+          check_pending
+        end
+      end
 
+      def check_pending(response = nil)
+        log.info "Checking for old pull resquests..."
+        prh = PullRequestHelper.new(config.access_token)
+        prf = PullRequestFormatter.new(
+          prh.retrieve_older_than(Date.today - 3)
+        )
+
+        if response
+          response.reply(prf.pretty_print)
+        else
           robot.send_messages(
             Source.new(room: Lita::Room.find_by_name(config.room)),
             prf.pretty_print
